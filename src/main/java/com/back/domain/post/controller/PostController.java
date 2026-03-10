@@ -2,18 +2,19 @@ package com.back.domain.post.controller;
 
 import com.back.domain.post.entity.Post;
 import com.back.domain.post.service.PostService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequiredArgsConstructor
-@Validated
 public class PostController {
 
     private final PostService postService;
@@ -25,20 +26,27 @@ public class PostController {
         return getWriteForm("", "", "", "");
     }
 
+    @AllArgsConstructor
+    @Getter
+    public static class WriteRequestForm {
+        // 1. 액션 메서드의 입력값을 객체로 모아 받는다.
+        // 이때 유효성 조건을 검사하기 위해 생성하는 필드는 액션의 name 값과 동일해야 함
+
+        @NotBlank
+        @Size(min=2, max=10)
+        private String title;
+
+        @NotBlank
+        @Size(min=2, max=100)
+        private String content;
+    }
 
     @PostMapping("/posts/write")
     @ResponseBody
-    public String write(
-            @NotBlank
-            @Size(min=2, max=10)
-            String title,
+    public String write(@Valid WriteRequestForm form) {
+        // 2. 필드를 갖고 있는 클래스 타입의 객체 변수를 매개변수로 받음
 
-            @NotBlank
-            @Size(min=2, max=100)
-            String content) {
-
-
-        Post post = postService.write(title, content);
+        Post post = postService.write(form.title, form.content);
 
         return "%d번 글이 작성되었습니다.".formatted(post.getId());
     }
