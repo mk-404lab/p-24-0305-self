@@ -26,7 +26,7 @@ public class PostController {
     @GetMapping("/posts/write-form")
     @ResponseBody
     public String writeForm() {
-        return getWriteForm("", "", "", "");
+        return getWriteForm("", "", "");
     }
 
     @AllArgsConstructor
@@ -61,7 +61,7 @@ public class PostController {
                     .sorted()
                     .collect(Collectors.joining("\n"));
 
-            return getWriteForm(errorMessages, form.title, form.content, "title");
+            return getWriteForm(errorMessages, form.title, form.content);
         }
 
         Post post = postService.write(form.title, form.content);
@@ -70,7 +70,7 @@ public class PostController {
     }
 
 
-    private String getWriteForm(String errorMessage, String title, String content, String errorFieldName) {
+    private String getWriteForm(String errorMessage, String title, String content) {
         return """
                 <ul style="color:red">%s</ul>
                 <form method="post" action="/posts/write">
@@ -82,12 +82,13 @@ public class PostController {
                 </form>
                 
                 <script>
-                    const errorFieldName = "%s"; 
+                   const li = document.querySelector("ul li");
+                   const errorFieldName = li.dataset.errorField;
                     if(errorFieldName.length > 0) {
                         const form = document.querySelector("form");
                         form[errorFieldName].focus();
                     }
                 </script>
-                """.formatted(errorMessage, title, content, errorFieldName);
+                """.formatted(errorMessage, title, content);
     }
 }
