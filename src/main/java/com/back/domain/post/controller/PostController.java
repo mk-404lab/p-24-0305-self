@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -43,8 +44,16 @@ public class PostController {
 
     @PostMapping("/posts/write")
     @ResponseBody
-    public String write(@Valid WriteRequestForm form) {
-        // 2. 필드를 갖고 있는 클래스 타입의 객체 변수를 매개변수로 받음
+    public String write(@Valid WriteRequestForm form,
+                        BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            String fieldName = bindingResult.getFieldError().getField();
+
+            String errorMessage = bindingResult.getFieldError().getDefaultMessage();
+
+            return getWriteForm(errorMessage, form.title, form.content, fieldName);
+        }
 
         Post post = postService.write(form.title, form.content);
 
