@@ -33,12 +33,12 @@ public class PostController {
         // 1. 액션 메서드의 입력값을 객체로 모아 받는다.
         // 이때 유효성 조건을 검사하기 위해 생성하는 필드는 액션의 name 값과 동일해야 함
 
-        @NotBlank
-        @Size(min=2, max=10)
+        @NotBlank(message = "제목을 필수입니다.")
+        @Size(min=2, max=10, message = "제목은 2자 이상 10자 이하로 입력해주세요.")
         private String title;
 
-        @NotBlank
-        @Size(min=2, max=100)
+        @NotBlank(message = "내용을 필수입니다.")
+        @Size(min=2, max=100, message = "내용은 2자 이상 100자 이하로 입력해주세요.")
         private String content;
     }
 
