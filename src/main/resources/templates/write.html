@@ -6,7 +6,7 @@
     <title>Title</title>
 </head>
 <body>
-<ul style="color:red"></ul>
+<ul style="color:red" th:utext="${errorMessages}"></ul>
 <form method="post" action="/posts/write">
     <input type="text" name="title" value="" autoFocus>
     <br>
